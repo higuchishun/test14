@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>第一ミッション</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Reggae+One&display=swap" rel="stylesheet">
+
+  <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome-animation/0.0.10/font-awesome-animation.css" type="text/css" media="all" />
+</head>
+<body>
+      <!-- ハンバーガーメニュー -->
+      <div class="hamburger" onclick="toggleMenu()">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    
+      <!-- メニューの内容 -->
+      <div id="menu" class="menu">
+        <a href="hero.html" target="_blank">ロスヒーローレベル</a>
+        <a href="recipe_record.html" target="_blank">倒したフードロスエネミー</a>
+    
+      </div>
+<h1>3 残食家の鬼音響<div class = "star-level"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></div></h1>
+<img src = "img/賞味期限切れ.png" class="keyframe animation" alt = "poteto">
+<p class="explanation">出された食事をすぐ食べ残す残飯王の鬼音響を発見！<br>出された食事をすぐに食べ残し、食べ物の価値を踏みにじる存在である。好き嫌いが多く、どんな美味しい料理も見向きもせず、無慈悲に残してしまうとして知られている。<br>この残飯王の鬼音響を倒すためにば"ルナティック・チーズの秘宝（カルボナーラ） "を作らねばならない！<br>料理の美味しさを見せつけ、食べ物の大切さに気づかせよ！</p>
+<div id="checklist">
+  <h2>ルナティック・チーズの秘宝（カルボナーラ）</h2>
+  <div class = "checklist-content">
+  <div class = "item1">
+  <label><input type="checkbox" class="check-item" data-name="パスタ" data-quantity="100"> パスタ - 100g</label><br>
+  <label><input type="checkbox" class="check-item" data-name="ベーコン" data-quantity="1"> ベーコン - 1枚</label><br>
+  </div>
+  <div class = "item2">
+  <label><input type="checkbox" class="check-item" data-name="玉ねぎ" data-quantity="0.5"> 玉ねぎ - 0.5個</label><br>
+  <label><input type="checkbox" class="check-item" data-name="しめじ" data-quantity="1"> しめじ - 1個</label><br>
+  </div>
+  <div class = "item3">
+    <label><input type="checkbox" class="check-item" data-name="卵" data-quantity="1"> 卵 - 1個</label><br>
+    <label><input type="checkbox" class="check-item" data-name="アスパラ" data-quantity="1"> アスパラ - 1本</label><br>
+    </div>
+</div>
+<details class="accordion-003">
+  <summary><div><i class="fa-solid fa-key"></i>キーアイテム</div></summary>
+  <p>牛乳…150ml<br>コンソメ…少々<br>黒コショウ…少々<br>塩こしょう…少々</p>
+</details>
+<!-- <details class="accordion-003">
+  <summary>アコーディオンのデザイン</summary>
+  <p>下線だけのシンプルなアコーディオンメニュー。クセがなくどんなサイトでも使いやすいのが特徴です。</p>
+</details> -->
+</div>
+
+<div class="container">
+  <h3>秘伝のアイテムボックス</h3>
+  <form id="ingredient-form">
+    <label for="name">食材の名前:</label>
+    <select id="name" name="name" required>
+      <option value="" disabled selected>選択してください</option>
+      
+      <option value="パスタ">パスタ</option>
+        <option value="ベーコン">ベーコン</option>
+        <option value="玉ねぎ">玉ねぎ</option>
+        <option value="しめじ"> しめじ</option>
+        <option value="卵">卵</option>
+        <option value="アスパラ">アスパラ</option>
+      
+      
+      
+    </select>
+
+    <label for="quantity">個数（<span id="unit-label">個</span>）:</label>
+        <input type="number" id="quantity" name="quantity" step="0.5" required><br>
+        <!-- 追加: 単位の自動変更に使用 -->
+        <input type="hidden" id="auto-unit" name="auto-unit">
+
+    
+
+    <button type="submit">登録</button>
+  </form>
+  <div id="output"></div>
+
+  <button id="mission-button" style="display:none;" onclick="goToSecondMission()">次へ進む</button>
+</div>
+<script>
+  // メニュー表示の切り替え
+  function toggleMenu() {
+    const menu = document.getElementById('menu');
+    menu.classList.toggle('active');
+  }
+
+  // 食材の単位を定義
+  const unitMap = {
+    'じゃがいも': '個',
+    'ベーコン': '枚',
+    '玉ねぎ': '個',
+    'バター': 'g',
+    'アスパラ': '本',
+    'チーズ': 'g',
+    'other': '' // 自由入力の場合は単位なし
+  };
+
+  // 選択された食材に応じて単位を設定する
+  document.getElementById('name').addEventListener('change', function() {
+    const selectedValue = this.value;
+    const otherNameInput = document.getElementById('otherName');
+    const otherNameLabel = document.getElementById('otherNameLabel');
+    
+    if (selectedValue === 'other') {
+      otherNameInput.style.display = 'block';
+      otherNameLabel.style.display = 'block';
+    } else {
+      otherNameInput.style.display = 'none';
+      otherNameLabel.style.display = 'none';
+    }
+  });
+
+  // フォーム送信時に食材を保存し、リストに表示
+  document.getElementById('ingredient-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const nameSelect = document.getElementById('name');
+    const selectedName = nameSelect.value;
+    const otherName = document.getElementById('otherName').value;
+    const name = selectedName === 'other' ? otherName : selectedName;
+    const quantity = parseFloat(document.getElementById('quantity').value);
+    const photo = document.getElementById('photo').files[0];
+    const unit = unitMap[selectedName] || '個';
+    const now = new Date();
+    const formattedDate = now.toLocaleString();
+
+    const ingredient = {
+      name: name,
+      quantity: quantity,
+      unit: unit,
+      date: formattedDate,
+      photo: photo ? URL.createObjectURL(photo) : ''
+    };
+
+    saveIngredient(ingredient);
+    document.getElementById('ingredient-form').reset();
+  });
+
+  // 食材を保存し、ローカルストレージに追加
+  function saveIngredient(ingredient) {
+    let ingredients = JSON.parse(localStorage.getItem('ingredients')) || [];
+    const existingIngredient = ingredients.find(ing => ing.name === ingredient.name);
+
+    if (existingIngredient) {
+      existingIngredient.quantity += ingredient.quantity;
+    } else {
+      ingredients.push(ingredient);
+    }
+
+    localStorage.setItem('ingredients', JSON.stringify(ingredients));
+    displayStoredIngredients();
+    updateChecklist(ingredient.name);
+  }
+
+  // 保存された食材を表示
+  function displayStoredIngredients() {
+    const ingredients = JSON.parse(localStorage.getItem('ingredients')) || [];
+    const output = document.getElementById('output');
+    output.innerHTML = '';
+
+    ingredients.forEach(ingredient => {
+      const outputItem = document.createElement('div');
+      outputItem.innerHTML =
+        `<strong>食材名:</strong> ${ingredient.name}<br>
+         <strong>数量:</strong> ${ingredient.quantity} ${ingredient.unit}<br>
+         <strong>登録した日時:</strong> ${ingredient.date}<br>
+         ${ingredient.photo ? `<img src="${ingredient.photo}" alt="写真"><br>` : ''}
+         <button class="delete-button" data-name="${ingredient.name}">削除</button>`;
+      output.appendChild(outputItem);
+
+      outputItem.querySelector('.delete-button').addEventListener('click', function() {
+        deleteIngredient(ingredient.name);
+      });
+    });
+  }
+
+  // チェックリストの状態を更新
+  function updateChecklist(ingredientName) {
+    const ingredients = JSON.parse(localStorage.getItem('ingredients')) || [];
+    const checklistItem = document.querySelector(`.check-item[data-name="${ingredientName}"]`);
+
+    if (checklistItem) {
+      const totalQuantity = ingredients
+        .filter(ing => ing.name === ingredientName)
+        .reduce((sum, ing) => sum + ing.quantity, 0);
+
+      const requiredQuantity = parseFloat(checklistItem.dataset.quantity);
+      checklistItem.checked = totalQuantity >= requiredQuantity;
+
+      localStorage.setItem(ingredientName, JSON.stringify(checklistItem.checked));
+    }
+
+    checkMissionButton();
+  }
+
+  // 削除処理
+  function deleteIngredient(name) {
+    let ingredients = JSON.parse(localStorage.getItem('ingredients')) || [];
+    ingredients = ingredients.filter(ingredient => ingredient.name !== name);
+    localStorage.setItem('ingredients', JSON.stringify(ingredients));
+    displayStoredIngredients();
+    updateChecklist(name); // 削除後にチェックリストを更新
+  }
+
+  // ミッションボタンの表示切り替え
+  function checkMissionButton() {
+    const allChecked = Array.from(document.querySelectorAll('.check-item')).every(item => item.checked);
+    const missionButton = document.getElementById('mission-button');
+    missionButton.style.display = allChecked ? 'block' : 'none';
+  }
+
+  // 次のミッションへの移行処理
+  function goToSecondMission() {
+    const allChecked = Array.from(document.querySelectorAll('.check-item')).every(item => item.checked);
+    if (allChecked) {
+      alert('次のミッションへ進みます！');
+      updateIngredientQuantities();
+      window.location.href = 'mission2_6.html';
+    } else {
+      alert('すべてのチェックボックスがチェックされていません。まだ未完成です。');
+    }
+  }
+  function updateIngredientQuantities() {
+    const ingredients = JSON.parse(localStorage.getItem('ingredients')) || [];
+    const checklistItems = document.querySelectorAll('.check-item');
+
+    checklistItems.forEach(item => {
+      if (item.checked) {
+        const ingredientName = item.dataset.name;
+        const requiredQuantity = parseInt(item.dataset.quantity, 10);
+        const ingredient = ingredients.find(ing => ing.name === ingredientName);
+
+        if (ingredient) {
+          ingredient.quantity -= requiredQuantity;
+          if (ingredient.quantity <= 0) {
+            const index = ingredients.indexOf(ingredient);
+            ingredients.splice(index, 1);
+            item.checked = false;
+            localStorage.setItem(ingredientName, JSON.stringify(false));
+          }
+        }
+      }
+    });
+
+    localStorage.setItem('ingredients', JSON.stringify(ingredients));
+    checkMissionButton();
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    displayStoredIngredients(); // ロード時に保存された食材を表示
+    loadChecklistState();       // チェックリストの状態を復元
+    checkMissionButton();       // ボタン表示状態をチェック
+  });
+
+  // チェックリストの状態をローカルストレージからロード
+  function loadChecklistState() {
+    const checklistItems = document.querySelectorAll('.check-item');
+    checklistItems.forEach(item => {
+      const itemName = item.dataset.name;
+      item.checked = JSON.parse(localStorage.getItem(itemName)) || false;
+      item.addEventListener('change', function() {
+        localStorage.setItem(itemName, JSON.stringify(item.checked));
+        checkMissionButton();
+      });
+    });
+  }
+</script>
+</body>
+</html>

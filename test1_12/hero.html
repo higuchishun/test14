@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="css/style2.css">
+  <title>ヒーロー</title>
+  <style>
+    img{
+        width: 300px;
+        height: 300px;
+    }
+    #hero-info{
+        display: flex;
+        /* justify-content: space-around; */
+    }
+    p{
+        margin: 40px;
+    }
+    @media (max-width: 600px) {
+        #hero-info{
+            display: block;
+        }
+    }
+  </style>
+</head>
+<body>
+  <h1>ロスヒーロー</h1>
+  <img src="img/hero.png">
+  <div id="hero-info">
+    <p>ポイント: <span id="points">0</span></p>
+    <p>レベル: <span id="level">1</span></p>
+    <p>称号: <span id="title">初心者冒険者</span></p>
+  </div>
+  <script>
+    // ポイント、レベル、称号を管理する変数
+    let points = parseInt(localStorage.getItem('points')) || 0;
+    let level = parseInt(localStorage.getItem('level')) || 1;
+    let title = localStorage.getItem('title') || '初心者冒険者';
+
+    // ポイント、レベル、称号の更新
+    function updateHeroInfo() {
+      document.getElementById('points').textContent = points;
+      document.getElementById('level').textContent = level;
+      document.getElementById('title').textContent = title;
+    }
+
+    // レベルと称号を更新する関数
+    function updateLevel() {
+      if (points >= 200) {
+        level = 5 + Math.floor((points - 200) / 60);
+      } else if (points >= 160) {
+        level = 4;
+      } else if (points >= 80) {
+        level = 3;
+      } else if (points >= 40) {
+        level = 2;
+      } else {
+        level = 1;
+      }
+
+      // レベルに応じた称号の設定
+      if (level >= 14) {
+        title = '伝説の英雄';
+      } else if (level >= 8) {
+        title = '上級戦士';
+      } else if (level >= 3) {
+        title = '中級戦士';
+      } else {
+        title = '初心者冒険者';
+      }
+
+      // ローカルストレージに保存
+      localStorage.setItem('points', points);
+      localStorage.setItem('level', level);
+      localStorage.setItem('title', title);
+    }
+
+    // ページロード時にヒーロー情報を更新
+    window.onload = function() {
+      updateLevel();
+      updateHeroInfo();
+    };
+  </script>
+</body>
+</html>
